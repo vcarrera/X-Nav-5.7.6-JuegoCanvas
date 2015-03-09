@@ -4,12 +4,16 @@ body{
     background-repeat: no-repeat;
     background-position: right top;
 }
+canvas{
+    margin:10px;
+    margin-left:30px;
+}
 button{
     height:40px;
     float: right;
 } 
 h1{
-    display:inline;
+    display:inline;   
 }
 #credit{
     margin: 5%;
