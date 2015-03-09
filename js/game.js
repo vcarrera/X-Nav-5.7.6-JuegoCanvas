@@ -86,7 +86,7 @@ var hero = {
 	speed: STANDARSIZE*10 // movement in pixels per second
 };
 var moveX, moveY;
-var dmg,damage;
+var damage;
 var posOrig={};
 var princess = {};
 var princessesCaught = 0;
@@ -203,11 +203,11 @@ function possrand(o) {
 
 var reset = function () {
     damage=false;
-    dmg=0;
     lives=3;
     var o;
-    var i;
-    var random;    
+    var i, c;
+    var random;   
+    curetime=0;
     level= Math.round(princessesCaught/5+1);
     numOfElements=level;
     resetMap();
@@ -224,9 +224,11 @@ var reset = function () {
 
     if (princessesCaught%4==3){
         numFire++;
+        numStones--;
     }
     if (princessesCaught%6==5){
         numMonster++;
+        numFire--;
     }
     for (i=0; i < numFire; i++){
         o={};        
@@ -286,28 +288,17 @@ var update = function (modifier) {
         moveX=true;
 	}
 	
-	if (moveX||moveY){
-        if (dmg==0)
-            damage=false; 
-        if (dmg>0)
-            dmg--;
+    if (lives>0&&(moveX||moveY)){ 
         freemove=elementCheck(posFin,arrayStones);
         if (freemove&&inArea(posFin)){
                 hero.x = Math.round(posFin.x);
                 hero.y = Math.round(posFin.y);
         }  
-        if (!elementCheck(hero,arrayFire)){
-            dmg+=2;
-            if (dmg>=30){
-                lives--;
-                dmg=0;
-            }
-            
-            damage=true;
-        }
+        
         posOrig=posaux;
         
-    }
+        }
+        
         for (i=0; i < arrayMonster.length; i++){
             if (Math.random()<0.02){
                 arrayMonster[i].xs=getsigne();
@@ -318,11 +309,34 @@ var update = function (modifier) {
             if (inArea(posFin)){
                 arrayMonster[i].x=posFin.x;
                 arrayMonster[i].y=posFin.y; 
+            }else{
+                arrayMonster[i].xs=getsigne();
+                arrayMonster[i].ys=getsigne();
             }
         }
-	if (lives>0&&areTouching(hero,princess,STANDARSIZE/2) ) {
+        moveX=true;
+        moveY=true;
+        if (!elementCheck(hero,arrayMonster)){
+           if (!damage){
+                lives--;
+                curetime=Date.now()+500;
+            }            
+            damage=true
+        }
+        if (!elementCheck(hero,arrayFire)){
+            if (!damage){
+                lives--;
+                curetime=Date.now()+500;
+            }            
+            damage=true;            
+        }
+        if (curetime<Date.now()){      
+            dmg=0;
+            damage=false;
+        }
+	if (areTouching(hero,princess,STANDARSIZE/2) ) {
 		princessesCaught++;
-        if (numStones < 15)
+        if (numStones < 15 && level <10)
             numStones++;
 		reset();
 	}
@@ -333,13 +347,6 @@ var update = function (modifier) {
 var render = function () {
 	if (bgReady) {
 		ctx.drawImage(bgImage, 0, 0);
-	}
-
-	if (heroReady&&heroDReady) {
-        if (damage)
-            ctx.drawImage(heroDImage, hero.x, hero.y);
-        else
-            ctx.drawImage(heroImage, hero.x, hero.y);
 	}
 
 	if (princessReady) {
@@ -361,7 +368,12 @@ var render = function () {
             ctx.drawImage(monsterImage, arrayMonster[i].x, arrayMonster[i].y);
         }
     }
-    
+    if (heroReady&&heroDReady) {
+        if (damage)
+            ctx.drawImage(heroDImage, hero.x, hero.y);
+        else
+            ctx.drawImage(heroImage, hero.x, hero.y);
+    }
    
 	// Score
 	ctx.fillStyle = "rgb(250, 250, 250)";

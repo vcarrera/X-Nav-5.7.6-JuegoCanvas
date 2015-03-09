@@ -1,0 +1,31 @@
+html,body{ height:100%; weigth:auto;}
+body{
+    background-image: url("../images/Aiouen_by_egher.jpg");
+    background-repeat: no-repeat;
+    background-position: right top;
+}
+button{
+    height:40px;
+    float: right;
+} 
+h1{
+    display:inline;
+}
+#credit{
+    margin: 5%;
+    padding-top: 15%;
+    margin-button:0%;
+    float: right;
+    width: 550px;
+    height:300px;
+}
+ul{
+    background-color:rgba(88, 88, 88, 0.4);   
+    border-radius: 25px;
+    color: #000;
+    text-shadow:
+    -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+    1px 1px 0 #fff;
+}
