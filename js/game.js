@@ -32,6 +32,7 @@ function ss_soundbits(sound){
 } 
 var damageS  = ss_soundbits("audio/Damage.wav");
 var freeP  = ss_soundbits("audio/win.ogg");
+var exploxion = ss_soundbits("audio/explosion.wav");
 // Create the canvas
 var sound=false;
 var canvas = document.createElement("canvas");
@@ -362,6 +363,8 @@ var update = function (modifier) {
             }
             if(!elementCheck(arrayMonster2[i],arrayFire)){
                 arrayMonster2.splice(i, 1);
+                if (sound)
+                    exploxion.playclip();
             }
         }
     }        
@@ -394,7 +397,8 @@ var update = function (modifier) {
     }
 	if (areTouching(hero,princess,STANDARSIZE/2) ) {
 		princessesCaught++;
-        freeP.playclip();
+        if (sound)
+            freeP.playclip();
         if (numStones < 15 && level <10)
             numStones++;
 		reset();
