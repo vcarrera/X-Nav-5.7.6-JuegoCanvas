@@ -30,7 +30,8 @@ function ss_soundbits(sound){
         return audio_element
     }
 } 
-var clicksound  = ss_soundbits("audio/Damage.wav");
+var damageS  = ss_soundbits("audio/Damage.wav");
+var freeP  = ss_soundbits("audio/win.ogg");
 // Create the canvas
 var sound=false;
 var canvas = document.createElement("canvas");
@@ -127,7 +128,7 @@ var c1 = {
 };
 var numMonster=1;
 var arrayMonster = [];
-var numMonster2=0;
+var numMonster2=1;
 var arrayMonster2 = [];
 var numFire=1;
 var arrayFire = [];
@@ -259,6 +260,10 @@ var reset = function () {
         numMonster++;
         numFire--;
     }
+     if (princessesCaught%8==7){
+        numMonster2++;
+        numMonster--;
+    }
     for (i=0; i < numFire; i++){
         o={};        
         if (possrand(o))
@@ -269,7 +274,11 @@ var reset = function () {
         if (possrand(o))
             arrayMonster.push(o);
     }
-
+    for (i=0; i < numMonster2; i++){
+        o={};        
+        if (possrand(o))
+            arrayMonster2.push(o);
+    }
 };
 
 function  elementCheck(posOrig,array){
@@ -289,91 +298,103 @@ function  elementCheck(posOrig,array){
 function getsigne(){
     return Math.round(Math.random()) * 2 - 1;
 }
+function checkdmg(time){
+    if (!damage && lives>0){
+            lives--;
+            if (sound)
+                damageS.playclip();
+            curetime=Date.now()+time;
+        }            
+    damage=true;
+}
 // Update game objects
 var update = function (modifier) {
-    var freemove=true;
     var posaux={};
     var posFin={};
-    var i;
+    var i, aux;
+    var hs=hero.speed * modifier;
     moveX=false;
     moveY=false;
     posaux.x=hero.x;
     posaux.y=hero.y;
     posFin=posaux;
 	if (38 in keysDown) { // Player holding up
-        posFin.y=hero.y-hero.speed * modifier; 
+        posFin.y=hero.y-hs; 
         moveY=true;
 	}
 	if (40 in keysDown) { // Player holding down
-		posFin.y=hero.y+hero.speed * modifier;
+		posFin.y=hero.y+hs;
         moveY=true;
 	}
 	if (37 in keysDown) { // Player holding left
-		posFin.x=hero.x-hero.speed * modifier;
+		posFin.x=hero.x-hs;
         moveX=true;
 	}
 	if (39 in keysDown) { // Player holding right
-		posFin.x=hero.x+hero.speed * modifier;
+		posFin.x=hero.x+hs;
         moveX=true;
 	}
 	
     if (lives>0&&(moveX||moveY)){ 
-        freemove=elementCheck(posFin,arrayStones);
-        if (freemove&&inArea(posFin)){
+        
+        if (elementCheck(posFin,arrayStones)&&inArea(posFin)){
                 hero.x = Math.round(posFin.x);
                 hero.y = Math.round(posFin.y);
         }  
         
         posOrig=posaux;
-        
-        }
-        
-        for (i=0; i < arrayMonster.length; i++){
-            if (Math.random()<0.02){
-                arrayMonster[i].xs=getsigne();
-                arrayMonster[i].ys=getsigne();
-            }
-            posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE * modifier;
-            posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE * modifier;
-            if (inArea(posFin)){
-                arrayMonster[i].x=posFin.x;
-                arrayMonster[i].y=posFin.y; 
-            }else{
-                arrayMonster[i].xs=getsigne();
-                arrayMonster[i].ys=getsigne();
-            }
-        }
         for (i=0; i < arrayMonster2.length; i++){
+            posFin.x=arrayMonster2[i].x;
+            posFin.y=arrayMonster2[i].y;
             if (moveX){
-                arrayMonster[i].xs=hero.x-arrayMonster[i].x;
+                aux=hero.x-arrayMonster2[i].x;
+                arrayMonster2[i].xs=Math.abs(aux)/aux;
+                posFin.x=arrayMonster2[i].x+arrayMonster2[i].xs * hs;
             }
-             if (moveX){
-                arrayMonster[i].xs=hero.x-arrayMonster[i].x;
-            }
-            posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE * modifier;
-            posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE * modifier;
-            if (inArea(posFin)){
-                arrayMonster[i].x=posFin.x;
-                arrayMonster[i].y=posFin.y; 
-            }
-        }
-        moveX=true;
-        moveY=true;
-        if (!elementCheck(hero,arrayMonster)||!elementCheck(hero,arrayFire)){
-           if (!damage && lives>0){
-                lives--;
-                if (sound)
-                    clicksound.playclip();
-                curetime=Date.now()+500;
+             if (moveY){
+                aux=hero.y-arrayMonster2[i].y;
+                arrayMonster2[i].ys=Math.abs(aux)/aux;
+                posFin.y=arrayMonster2[i].y+arrayMonster2[i].ys * hs;
             }            
-            damage=true;
+            if (elementCheck(posFin,arrayStones) && inArea(posFin)){
+                arrayMonster2[i].x=posFin.x;
+                arrayMonster2[i].y=posFin.y; 
+            }
+            if(!elementCheck(arrayMonster2[i],arrayFire)){
+                arrayMonster2.splice(i, 1);
+            }
         }
-        if (curetime<Date.now()){      
-            dmg=0;
-            damage=false;
+    }        
+    for (i=0; i < arrayMonster.length; i++){
+        if (Math.random()<0.02){
+            arrayMonster[i].xs=getsigne();
+            arrayMonster[i].ys=getsigne();
         }
+        posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE * modifier;
+        posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE * modifier;
+        if (inArea(posFin)){
+            arrayMonster[i].x=posFin.x;
+            arrayMonster[i].y=posFin.y; 
+        }else{
+            arrayMonster[i].xs=getsigne();
+            arrayMonster[i].ys=getsigne();
+        }
+    }
+    moveX=true;
+    moveY=true;
+    if (!elementCheck(hero,arrayMonster2)){
+        checkdmg(100);
+    }
+    if (!elementCheck(hero,arrayMonster)||!elementCheck(hero,arrayFire)){
+       checkdmg(500);
+    }
+    if (curetime<Date.now()){      
+        dmg=0;
+        damage=false;
+    }
 	if (areTouching(hero,princess,STANDARSIZE/2) ) {
 		princessesCaught++;
+        freeP.playclip();
         if (numStones < 15 && level <10)
             numStones++;
 		reset();
@@ -406,6 +427,11 @@ var render = function () {
             ctx.drawImage(monsterImage, arrayMonster[i].x, arrayMonster[i].y);
         }
     }
+    if (monster2Ready){
+        for(var i=0;i<arrayMonster2.length;i++){
+            ctx.drawImage(monster2Image, arrayMonster2[i].x, arrayMonster2[i].y);
+        }
+    }
     if (heroReady&&heroDReady) {
         if (damage)
             ctx.drawImage(heroDImage, hero.x, hero.y);
@@ -418,7 +444,7 @@ var render = function () {
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
-    ctx.fillText("level: "+level+"  Lives: " + lives, 32, 32);
+    ctx.fillText("Level: "+level+"  Lives: " + lives+" Sound:"+sound, 32, 32);
 	ctx.fillText("Princesses caught: " + princessesCaught, 32, 64);
     ctx.fillText("s: "+arrayStones.length+ " f:"+arrayFire.length+" m: "+arrayMonster.length+" M: "+arrayMonster2.length, 32, 96);
     if (lives<=0)
