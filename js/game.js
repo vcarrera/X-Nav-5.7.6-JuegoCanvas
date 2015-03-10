@@ -33,6 +33,7 @@ function ss_soundbits(sound){
 var damageS  = ss_soundbits("audio/Damage.wav");
 var freeP  = ss_soundbits("audio/win.ogg");
 var exploxion = ss_soundbits("audio/explosion.wav");
+
 // Create the canvas
 var sound=false;
 var delay;
@@ -48,7 +49,9 @@ document.body.appendChild(canvas);
 const STANDARSIZE=32;
 const ROW=Math.round(canvas.width/STANDARSIZE);
 const COL=Math.round(canvas.height/STANDARSIZE);
-
+const tower={};
+tower.x=canvas.width / 2;
+tower.y=canvas.height / 2;
 // Background image
 var bgReady = false;
 var bgImage = new Image();
@@ -56,6 +59,13 @@ bgImage.onload = function () {
 	bgReady = true;
 };
 bgImage.src = "images/background.png";
+// heart image
+var heartReady = false;
+var heartImage = new Image();
+heartImage.onload = function () {
+    heartReady = true;
+};
+heartImage.src = "images/heart-icon.png";
 // tower image
 var towerReady = false;
 var towerImage = new Image();
@@ -76,7 +86,6 @@ heroDImage.onload = function () {
     heroDReady = true;
 };
 heroDImage.src = "images/heroDamage.png";
-
 // princess image
 var princessReady = false;
 var princessImage = new Image();
@@ -249,8 +258,8 @@ var reset = function () {
     level= Math.trunc(princessesCaught/10+1);
     numOfElements=level;
     resetMap();
-	hero.x = canvas.width / 2;
-	hero.y = canvas.height / 2;   
+	hero.x = tower.x;
+	hero.y = tower.y;   
     posOrig=hero;
     putInMap(hero.x,hero.y);
     putInMap(hero.x+1,hero.y-1);
@@ -387,7 +396,11 @@ var update = function (modifier) {
         }
         posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE * modifier;
         posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE * modifier;
-        if (elementCheck(posFin,arrayStones)&&inArea(posFin)&&elementCheck(posFin,arrayFire)){
+        if (elementCheck(posFin,arrayStones)&&inArea(posFin)){
+            if ((areTouchingX(posFin,tower,STANDARSIZE*3/2)&&areTouchingY(posFin,tower,STANDARSIZE))||!elementCheck(posFin,arrayFire))
+                posFin.x=(arrayMonster[i].x-arrayMonster[i].xs * STANDARSIZE * modifier);
+            if ((areTouchingY(posFin,tower,STANDARSIZE*3/2)&&areTouchingX(posFin,tower,STANDARSIZE))||!elementCheck(posFin,arrayFire))
+                posFin.y=(arrayMonster[i].y-arrayMonster[i].ys * STANDARSIZE * modifier);
             arrayMonster[i].x=posFin.x;
             arrayMonster[i].y=posFin.y; 
         }else{
@@ -424,7 +437,7 @@ var render = function () {
 		ctx.drawImage(bgImage, 0, 0);
 	}
 	if(towerReady){
-        ctx.drawImage(towerImage, canvas.width / 2, canvas.height / 2);
+        ctx.drawImage(towerImage, tower.x, tower.y);
     }
 	if (princessReady) {
 		ctx.drawImage(princessImage, princess.x, princess.y);
@@ -461,11 +474,21 @@ var render = function () {
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
-    ctx.fillText("Level: "+level+"  Lives: " + lives+" Sound:"+sound, 32, 32);
-	ctx.fillText("Princesses caught: " + princessesCaught, 32, 64);
-    ctx.fillText("s: "+arrayStones.length+ " f:"+arrayFire.length+" m: "+arrayMonster.length+" M: "+arrayMonster2.length, 32, 96);
+    ctx.fillText("Level: "+level+"  Lives: ", 32, 12);
+    if (heartReady){
+        for(var i=0;i<lives;i++){
+            ctx.drawImage(heartImage, 200+i*32, 8);
+        }
+
+    }
+    if (lives==0){
+        ctx.fillText("0", 200, 12);
+    }
+    ctx.fillText(" Sound: "+(sound?"on":"off"), 350,12);
+	ctx.fillText("Princesses caught: " + princessesCaught, 32, 44);
+    //ctx.fillText("s: "+arrayStones.length+ " f:"+arrayFire.length+" m: "+arrayMonster.length+" M: "+arrayMonster2.length, 32, 76);
     if (lives<=0)
-        ctx.fillText("Game over", 200, 200);
+        ctx.fillText("Game over",200 , 200);
 };
 
 
