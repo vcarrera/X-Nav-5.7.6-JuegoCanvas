@@ -149,7 +149,7 @@ var numMonster2=1;
 var arrayMonster2 = [];
 var numFire=1;
 var arrayFire = [];
-var lives=1;
+var lives=3;
 // Handle keyboard controls
 var keysDown = {};
 
@@ -282,10 +282,14 @@ var reset = function () {
         numFire--;
         numStones--;
     }
-     if (princessesCaught%8==7){
+    if (princessesCaught%8==7){
         numMonster2++;
         numMonster--;
+        numStones--;
     }
+    if (numStones <3)
+        numStones=5;
+        
     for (i=0; i < numFire; i++){
         o={};        
         if (possrand(o))
@@ -425,7 +429,7 @@ var update = function (modifier) {
 		princessesCaught++;
         if (sound)
             freeP.playclip();
-        if (numStones < 15 && level <10)
+        if (numStones < 15 && princessesCaught <10)
             numStones++;
 		reset();
 	}
