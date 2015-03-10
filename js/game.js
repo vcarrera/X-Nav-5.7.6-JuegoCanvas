@@ -278,8 +278,9 @@ var reset = function () {
         numStones--;
     }
     if (princessesCaught%6==5){
-        numMonster++;
+        numMonster+=2;
         numFire--;
+        numStones--;
     }
      if (princessesCaught%8==7){
         numMonster2++;
@@ -306,11 +307,11 @@ var reset = function () {
 function  elementCheck(posOrig,array){
     var freemove=true;
     for (var i=0; i < array.length; i++){        
-        if (moveX && areTouchingX(posOrig,array[i],STANDARSIZE)&& areTouchingY(posOrig,array[i],STANDARSIZE-6)){
+        if (moveX && areTouchingX(posOrig,array[i],STANDARSIZE)&& areTouchingY(posOrig,array[i],STANDARSIZE-2)){
             freemove=false;
             break;
         }   
-        if (moveY && areTouchingY(posOrig,array[i],STANDARSIZE)&& areTouchingX(posOrig,array[i],STANDARSIZE-6)){
+        if (moveY && areTouchingY(posOrig,array[i],STANDARSIZE)&& areTouchingX(posOrig,array[i],STANDARSIZE-2)){
             freemove=false;
             break;
         }        
@@ -396,11 +397,11 @@ var update = function (modifier) {
         }
         posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE * modifier;
         posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE * modifier;
-        if (elementCheck(posFin,arrayStones)&&inArea(posFin)){
-            if ((areTouchingX(posFin,tower,STANDARSIZE*3/2)&&areTouchingY(posFin,tower,STANDARSIZE))||!elementCheck(posFin,arrayFire))
-                posFin.x=(arrayMonster[i].x-arrayMonster[i].xs * STANDARSIZE * modifier);
-            if ((areTouchingY(posFin,tower,STANDARSIZE*3/2)&&areTouchingX(posFin,tower,STANDARSIZE))||!elementCheck(posFin,arrayFire))
-                posFin.y=(arrayMonster[i].y-arrayMonster[i].ys * STANDARSIZE * modifier);
+        if ((areTouchingX(posFin,tower,STANDARSIZE*2)&&areTouchingY(posFin,tower,STANDARSIZE*3/2))||!elementCheck(posFin,arrayFire))
+            posFin.x-=arrayMonster[i].xs*hs*4;
+        if ((areTouchingY(posFin,tower,STANDARSIZE*2)&&areTouchingX(posFin,tower,STANDARSIZE*3/2))||!elementCheck(posFin,arrayFire))
+            posFin.y-=arrayMonster[i].ys*hs*4;
+        if (elementCheck(posFin,arrayStones)&&inArea(posFin)){           
             arrayMonster[i].x=posFin.x;
             arrayMonster[i].y=posFin.y; 
         }else{
