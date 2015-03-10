@@ -35,6 +35,7 @@ var freeP  = ss_soundbits("audio/win.ogg");
 var exploxion = ss_soundbits("audio/explosion.wav");
 // Create the canvas
 var sound=false;
+var delay;
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
 const TOP=32;
@@ -290,6 +291,7 @@ var reset = function () {
         if (possrand(o))
             arrayMonster2.push(o);
     }
+    delay=Date.now()+500;
 };
 
 function  elementCheck(posOrig,array){
@@ -471,7 +473,8 @@ var render = function () {
 var main = function () {
     var now = Date.now();
     var delta = now - then;
-    update(delta / 1000);
+    if (delay<Date.now())
+        update(delta / 1000);
     render();
 
     then = now;
