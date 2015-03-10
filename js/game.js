@@ -252,6 +252,8 @@ var reset = function () {
 	hero.y = canvas.height / 2;   
     posOrig=hero;
     putInMap(hero.x,hero.y);
+    putInMap(hero.x+1,hero.y-1);
+    putInMap(hero.x-1,hero.y+1);
     putInMap(hero.x+1,hero.y+1);
     putInMap(hero.x-1,hero.y-1);
     for (i=0; i < numStones; i++){
@@ -425,7 +427,6 @@ var render = function () {
 	if (princessReady) {
 		ctx.drawImage(princessImage, princess.x, princess.y);
 	}	
-     
    if (stoneReady){
         for(var i=0;i<arrayStones.length;i++){
             ctx.drawImage(stoneImage, arrayStones[i].x, arrayStones[i].y);
