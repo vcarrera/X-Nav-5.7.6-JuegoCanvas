@@ -55,7 +55,13 @@ bgImage.onload = function () {
 	bgReady = true;
 };
 bgImage.src = "images/background.png";
-
+// tower image
+var towerReady = false;
+var towerImage = new Image();
+towerImage.onload = function () {
+    towerReady = true;
+};
+towerImage.src = "images/tower.png";
 // Hero image
 var heroReady = false;
 var heroImage = new Image();
@@ -239,13 +245,15 @@ var reset = function () {
     var i, c;
     var random;   
     curetime=0;
-    level= Math.round(princessesCaught/5+1);
+    level= Math.trunc(princessesCaught/10+1);
     numOfElements=level;
     resetMap();
 	hero.x = canvas.width / 2;
 	hero.y = canvas.height / 2;   
     posOrig=hero;
     putInMap(hero.x,hero.y);
+    putInMap(hero.x+1,hero.y+1);
+    putInMap(hero.x-1,hero.y-1);
     for (i=0; i < numStones; i++){
         o={};        
         if (possrand(o))
@@ -411,7 +419,9 @@ var render = function () {
 	if (bgReady) {
 		ctx.drawImage(bgImage, 0, 0);
 	}
-
+	if(towerReady){
+        ctx.drawImage(towerImage, canvas.width / 2, canvas.height / 2);
+    }
 	if (princessReady) {
 		ctx.drawImage(princessImage, princess.x, princess.y);
 	}	
