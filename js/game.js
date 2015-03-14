@@ -152,7 +152,7 @@ var arrayFire = [];
 var lives=3;
 // Handle keyboard controls
 var keysDown = {};
-
+   
 addEventListener("keydown", function (e) {
 	keysDown[e.keyCode] = true;
 }, false);
@@ -249,6 +249,13 @@ function possrand(o) {
     
 
 var reset = function () {
+    var pstate = localStorage["princessesCaught"];
+    var psound = localStorage["sound"];    
+    if (pstate!=""&& pstate>princessesCaught)
+        princessesCaught=pstate;
+    if(psound!="")
+        sound=psound;
+
     damage=false;
     lives=3;
     var o;
@@ -273,23 +280,33 @@ var reset = function () {
     }
     possrand(princess);  
 
-    if (princessesCaught%4==3){
-        numFire++;
-        numStones--;
-    }
-    if (princessesCaught%6==5){
-        numMonster+=2;
-        numFire--;
-        numStones--;
-    }
-    if (princessesCaught%8==7){
-        numMonster2++;
-        numMonster--;
-        numStones--;
-    }
-    if (numStones <3)
+    if (princessesCaught<=1){
         numStones=5;
-        
+        numMonster=1;
+        numMonster2=1;
+        numFire=1;
+        lives=3; 
+    }else if (princessesCaught <= 5){
+        numStones=7;
+        numMonster=3;
+        numMonster2=2;
+        numFire=3;
+    }else if (princessesCaught <= 10){
+        numStones=7;
+        numMonster=5;
+        numMonster2=3;
+        numFire=5;
+    }else if (princessesCaught <= 15){
+        numStones=7;
+        numMonster=7;
+        numMonster2=5;
+        numFire=3;
+    } else {
+        numStones=7+Math.random()*level;
+        numMonster=7;
+        numMonster2=5+Math.random()*level;
+        numFire=Math.random()*level;
+    }
     for (i=0; i < numFire; i++){
         o={};        
         if (possrand(o))
@@ -394,6 +411,8 @@ var update = function (modifier) {
             }
         }
     }        
+    moveX=true;
+    moveY=true;
     for (i=0; i < arrayMonster.length; i++){
         if (Math.random()<0.02){
             arrayMonster[i].xs=getsigne();
@@ -413,8 +432,6 @@ var update = function (modifier) {
             arrayMonster[i].ys=getsigne();
         }
     }
-    moveX=true;
-    moveY=true;
     if (!elementCheck(hero,arrayMonster2)){
         checkdmg(100);
     }
@@ -431,8 +448,12 @@ var update = function (modifier) {
             freeP.playclip();
         if (numStones < 15 && princessesCaught <10)
             numStones++;
+        localStorage.setItem("princessesCaught", princessesCaught);
 		reset();
 	}
+	if (lives<=0){
+        localStorage.setItem("princessesCaught", 0);
+    }
 	
 };
 
@@ -496,7 +517,10 @@ var render = function () {
         ctx.fillText("Game over",200 , 200);
 };
 
-
+function resertlevel(){
+    localStorage.setItem("princessesCaught", 0);
+    reset();
+} 
 // The main game loop
 var main = function () {
     var now = Date.now();
@@ -506,10 +530,13 @@ var main = function () {
     render();
 
     then = now;
+    localStorage.setItem("sound", sound);
 };
 
 
 // Let's play this game!
+
+sound=false;
 reset();
 var then = Date.now();
 //The setInterval() method will wait a specified number of milliseconds, and then execute a specified function, and it will continue to execute the function, once at every given time-interval.

@@ -23,12 +23,19 @@ http://opengameart.org/content/around-the-world-msx-version.
 		<title>Simple Canvas Game</title>
 	</head>
 	<body>
-    <h1 class="text-center col-lg-12"> Princess Lala </h1>        
-        <button onclick="sound=!sound"> <i class="fa fa-bell"></i> sound on/off</button>
-         <audio src="audio/Around The World MSX.wav" loop controls>Around The World MSX-Snabisch</audio>   
-        <script src="js/game.js"></script> 
+        <h1 class="text-center col-lg-12"> Princess Lala </h1>      
+        <div id="controles">
+            <button onclick="resertlevel()"> <i class="fa fa-refresh"></i> reset</button>
+            <button id="buttonSound" onclick="sound=!sound"> <i class="fa fa-bell"></i> sound on/off</button>           
+        </div>
+        <script src="js/game.js"></script>  <audio src="audio/Around The World MSX.wav" loop controls>Around The World MSX-Snabisch</audio>   
         <span id="credit">
         <ul>
+            <h2>How play:</h2>
+            Use the direction keys <img style="height:40px;" src="images/Arrow_keys.jpg"/> for  move the hero <img src="images/hero.png"/>,<br>
+            rescue the princess <img src="images/princess.png"/>  and avoid the monsters <img src="images/monster2.png"/><img src="images/monster.png"/>,<br>
+            the fire <img src="images/Farm-Fresh_fire.png"/> hurts, but it helps against some moustruos.
+                
             <h2>Credits:</h2>
             <li>Concept: Gregorio Robles + <a href="http://www.lostdecadegames.com/how-to-make-a-simple-html5-canvas-game/">LOSTDECADEGAMES</a>.</li>
             <li>Graphics: <a href="http://www.lostdecadegames.com/how-to-make-a-simple-html5-canvas-game/">monster, background_game and hero</a>, <a href="http://www.whereisthetreasure.org/img/pyramids/appletDump/stone0.png"> stone</a>,<br> <a href="http://crossfire.real-time.com/images/princess_111.gif."> princess</a>, <a href="http://www.fatcow.com/free-icons/"> fire</a>,<a href="http://shlyapnikova.deviantart.com/art/Buildings-Icons-175867570">  tower</a>, <a href="http://egher.deviantart.com/art/Aiouen-90707784"> background.</a></li>
