@@ -233,7 +233,7 @@ function possrand(o) {
     do{
         randomI.x= Math.round(LEFT + (Math.random() * (RIGHT - LEFT)));
         randomI.y= Math.round(TOP + (Math.random() * (BUTTON - TOP)));
-        if (count++ > 100){
+        if (count++ > 1000){
             if (areTouching(randomI,princess,STANDARSIZE/2)){
                 return false;
             }else{ 
@@ -416,8 +416,11 @@ var update = function (modifier) {
     }        
     moveX=true;
     moveY=true;
+    /*
+     * PARTE DONDE SE CONTROLA EL MOVIMIENTO DE LOS MONSTRUOS VERDES
+     */
     for (i=0; i < arrayMonster.length; i++){
-        if (Math.random()<0.01){
+        if (Math.random()<0.015){
             arrayMonster[i].xs=getsigne();
             arrayMonster[i].ys=getsigne();
         }
@@ -478,6 +481,9 @@ var render = function () {
             ctx.drawImage(fireImage, arrayFire[i].x, arrayFire[i].y);
         }
     }
+    /*
+     * PARTE DONDE SE PINTAN LOS MONSTRUOS VERDES
+     */
 	if (monsterReady){
         for(var i=0;i<arrayMonster.length;i++){
             ctx.drawImage(monsterImage, arrayMonster[i].x, arrayMonster[i].y);
