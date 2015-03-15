@@ -1,0 +1,49 @@
+html,body{ height:100%; weigth:auto;}
+body{
+
+}
+@font-face {
+  font-family: "RusticBlackShadow";
+  src: url("../font/RusticBlackShadow.otf");
+}
+  
+audio, canvas{
+    display:inline;
+    margin-left:30px;
+    float: left;
+     margin-button:0px;
+}
+button{
+    position:relative;
+    display:inline;
+    height:40px;
+    float: right;
+    vertical-align:middle;
+} 
+h1{
+    font-family: "RusticBlackShadow";
+    display:inline;   
+}
+#credit{     
+    margin: 100px;
+    margin-top:40px;
+    margin-button:0px;
+    float: right;
+    bottom:0;
+    font: 120% sans-serif
+}
+ul{   
+    padding:20px;
+    padding-top:5px;
+    background-color:rgba(88, 88, 88, 0.4);   
+    border-radius: 25px;
+    color: #000;
+    text-shadow:
+    -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+    1px 1px 0 #fff;
+}
+ul a{
+    color:blue;
+}    

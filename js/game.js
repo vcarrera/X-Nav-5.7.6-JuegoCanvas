@@ -251,7 +251,7 @@ function possrand(o) {
 var reset = function () {
     var pstate = localStorage["princessesCaught"];
     var psound = localStorage["sound"];    
-    if (pstate!=""&& pstate>princessesCaught)
+    if (pstate!=""&& pstate>=0)
         princessesCaught=pstate;
     if(psound!="")
         sound=psound;
@@ -314,8 +314,11 @@ var reset = function () {
     }
     for (i=0; i < numMonster; i++){
         o={};        
-        if (possrand(o))
-            arrayMonster.push(o);
+        if (possrand(o)){            
+            arrayMonster.push(o);            
+        }
+        o.xs=getsigne();
+        o.ys=getsigne();
     }
     for (i=0; i < numMonster2; i++){
         o={};        
@@ -343,7 +346,7 @@ function getsigne(){
     return Math.round(Math.random()) * 2 - 1;
 }
 function checkdmg(time){
-    if (!damage && lives>0){
+    if (!damage && lives>0 && delay<Date.now()){
             lives--;
             if (sound)
                 damageS.playclip();
@@ -378,8 +381,7 @@ var update = function (modifier) {
 		posFin.x=hero.x+hs;
         moveX=true;
 	}
-	
-    if (lives>0&&(moveX||moveY)){ 
+    if (lives>0&&(moveX||moveY)&&delay<Date.now()){ 
         
         if (elementCheck(posFin,arrayStones)&&inArea(posFin)){
                 hero.x = Math.round(posFin.x);
@@ -414,17 +416,13 @@ var update = function (modifier) {
     moveX=true;
     moveY=true;
     for (i=0; i < arrayMonster.length; i++){
-        if (Math.random()<0.02){
+        if (Math.random()<0.01){
             arrayMonster[i].xs=getsigne();
             arrayMonster[i].ys=getsigne();
         }
         posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE * modifier;
-        posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE * modifier;
-        if ((areTouchingX(posFin,tower,STANDARSIZE*2)&&areTouchingY(posFin,tower,STANDARSIZE*3/2))||!elementCheck(posFin,arrayFire))
-            posFin.x-=arrayMonster[i].xs*hs*4;
-        if ((areTouchingY(posFin,tower,STANDARSIZE*2)&&areTouchingX(posFin,tower,STANDARSIZE*3/2))||!elementCheck(posFin,arrayFire))
-            posFin.y-=arrayMonster[i].ys*hs*4;
-        if (elementCheck(posFin,arrayStones)&&inArea(posFin)){           
+        posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE * modifier;      
+        if (elementCheck(posFin,arrayStones)&&inArea(posFin)&&elementCheck(posFin,arrayFire)&&!areTouching( posFin,tower,STANDARSIZE*3/2)){           
             arrayMonster[i].x=posFin.x;
             arrayMonster[i].y=posFin.y; 
         }else{
@@ -442,6 +440,9 @@ var update = function (modifier) {
         dmg=0;
         damage=false;
     }
+    if (lives<=2){
+        localStorage.setItem("princessesCaught", 0);
+    }
 	if (areTouching(hero,princess,STANDARSIZE/2) ) {
 		princessesCaught++;
         if (sound)
@@ -451,9 +452,6 @@ var update = function (modifier) {
         localStorage.setItem("princessesCaught", princessesCaught);
 		reset();
 	}
-	if (lives<=0){
-        localStorage.setItem("princessesCaught", 0);
-    }
 	
 };
 
@@ -511,7 +509,7 @@ var render = function () {
         ctx.fillText("0", 200, 12);
     }
     ctx.fillText(" Sound: "+(sound?"on":"off"), 350,12);
-	ctx.fillText("Princesses caught: " + princessesCaught, 32, 44);
+	ctx.fillText("princesses released: " + princessesCaught, 32, 44);
     //ctx.fillText("s: "+arrayStones.length+ " f:"+arrayFire.length+" m: "+arrayMonster.length+" M: "+arrayMonster2.length, 32, 76);
     if (lives<=0)
         ctx.fillText("Game over",200 , 200);
@@ -525,8 +523,7 @@ function resertlevel(){
 var main = function () {
     var now = Date.now();
     var delta = now - then;
-    if (delay<Date.now())
-        update(delta / 1000);
+    update(delta / 1000);
     render();
 
     then = now;
