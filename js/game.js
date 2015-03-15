@@ -420,8 +420,8 @@ var update = function (modifier) {
             arrayMonster[i].xs=getsigne();
             arrayMonster[i].ys=getsigne();
         }
-        posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE * modifier;
-        posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE * modifier;      
+        posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE *level* modifier;
+        posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE *level* modifier;      
         if (elementCheck(posFin,arrayStones)&&inArea(posFin)&&elementCheck(posFin,arrayFire)&&!areTouching( posFin,tower,STANDARSIZE*3/2)){           
             arrayMonster[i].x=posFin.x;
             arrayMonster[i].y=posFin.y; 
