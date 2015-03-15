@@ -359,6 +359,7 @@ var update = function (modifier) {
     var posaux={};
     var posFin={};
     var i, aux;
+    var securetower;
     var hs=hero.speed * modifier;
     moveX=false;
     moveY=false;
@@ -420,14 +421,15 @@ var update = function (modifier) {
             arrayMonster[i].xs=getsigne();
             arrayMonster[i].ys=getsigne();
         }
-        posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE * modifier;
-        posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE * modifier;      
-        if (elementCheck(posFin,arrayStones)&&inArea(posFin)&&elementCheck(posFin,arrayFire)&&!areTouching( posFin,tower,STANDARSIZE*3/2)){           
+        posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE *level* modifier;
+        posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE *level* modifier;      
+        securetower=!areTouching( posFin,tower,STANDARSIZE*3/2);
+        if (elementCheck(posFin,arrayStones)&&inArea(posFin)&&elementCheck(posFin,arrayFire)&&securetower){           
             arrayMonster[i].x=posFin.x;
             arrayMonster[i].y=posFin.y; 
         }else{
             arrayMonster[i].xs=getsigne();
-            arrayMonster[i].ys=getsigne();
+            arrayMonster[i].ys=getsigne();    
         }
     }
     if (!elementCheck(hero,arrayMonster2)){
@@ -509,7 +511,7 @@ var render = function () {
         ctx.fillText("0", 200, 12);
     }
     ctx.fillText(" Sound: "+(sound?"on":"off"), 350,12);
-	ctx.fillText("princesses released: " + princessesCaught, 32, 44);
+	ctx.fillText("Princesses released: " + princessesCaught, 32, 44);
     //ctx.fillText("s: "+arrayStones.length+ " f:"+arrayFire.length+" m: "+arrayMonster.length+" M: "+arrayMonster2.length, 32, 76);
     if (lives<=0)
         ctx.fillText("Game over",200 , 200);

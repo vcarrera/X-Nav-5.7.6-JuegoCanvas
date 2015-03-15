@@ -2,5 +2,7 @@ CACHE MANIFEST
 CACHE:
 js/*
 images/*
+audio/*
+
 FALLBACK:
 css/estilo.css css/estilo2.css
