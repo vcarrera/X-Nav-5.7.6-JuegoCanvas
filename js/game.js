@@ -427,12 +427,8 @@ var update = function (modifier) {
         }
         posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE *level* modifier;
         posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE *level* modifier;      
-<<<<<<< HEAD
         securetower=!areTouching( posFin,tower,STANDARSIZE*3/2);
         if (elementCheck(posFin,arrayStones)&&inArea(posFin)&&elementCheck(posFin,arrayFire)&&securetower){           
-=======
-        if (elementCheck(posFin,arrayStones)&&inArea(posFin)&&elementCheck(posFin,arrayFire)&&!areTouching( posFin,tower,STANDARSIZE*3/2)){           
->>>>>>> 11aa9d91a58c4ab06c4a6284ab69f823e24ed88d
             arrayMonster[i].x=posFin.x;
             arrayMonster[i].y=posFin.y; 
         }else{
