@@ -30,6 +30,7 @@ function ss_soundbits(sound){
         return audio_element
     }
 } 
+
 var damageS  = ss_soundbits("audio/Damage.wav");
 var freeP  = ss_soundbits("audio/win.ogg");
 var exploxion = ss_soundbits("audio/explosion.wav");
@@ -247,15 +248,16 @@ function possrand(o) {
     return true;
 };
     
-
+function changesound(){
+    sound=!sound;
+    localStorage.setItem("sound", sound);
+}
 var reset = function () {
     var pstate = localStorage["princessesCaught"];
-    var psound = localStorage["sound"];    
+    var psound = localStorage["sound"];  
+    sound=psound=="true";
     if (pstate!=""&& pstate>=0)
         princessesCaught=pstate;
-    if(psound!="")
-        sound=psound;
-
     damage=false;
     lives=3;
     var o;
@@ -508,8 +510,8 @@ var render = function () {
     if (lives==0){
         ctx.fillText("0", 200, 12);
     }
-    ctx.fillText(" Sound: "+(sound?"on":"off"), 350,12);
-	ctx.fillText("princesses released: " + princessesCaught, 32, 44);
+    ctx.fillText("Sound: "+(sound?"on ":"off ")+sound, 350,12);
+	ctx.fillText("Princesses released: " + princessesCaught, 32, 44);
     //ctx.fillText("s: "+arrayStones.length+ " f:"+arrayFire.length+" m: "+arrayMonster.length+" M: "+arrayMonster2.length, 32, 76);
     if (lives<=0)
         ctx.fillText("Game over",200 , 200);
@@ -527,13 +529,14 @@ var main = function () {
     render();
 
     then = now;
-    localStorage.setItem("sound", sound);
+          
+
 };
 
 
 // Let's play this game!
 
-sound=false;
+
 reset();
 var then = Date.now();
 //The setInterval() method will wait a specified number of milliseconds, and then execute a specified function, and it will continue to execute the function, once at every given time-interval.
