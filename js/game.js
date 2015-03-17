@@ -30,6 +30,7 @@ function ss_soundbits(sound){
         return audio_element
     }
 } 
+
 var damageS  = ss_soundbits("audio/Damage.wav");
 var freeP  = ss_soundbits("audio/win.ogg");
 var exploxion = ss_soundbits("audio/explosion.wav");
@@ -233,7 +234,7 @@ function possrand(o) {
     do{
         randomI.x= Math.round(LEFT + (Math.random() * (RIGHT - LEFT)));
         randomI.y= Math.round(TOP + (Math.random() * (BUTTON - TOP)));
-        if (count++ > 1000){
+        if (count++ > 100){
             if (areTouching(randomI,princess,STANDARSIZE/2)){
                 return false;
             }else{ 
@@ -247,15 +248,16 @@ function possrand(o) {
     return true;
 };
     
-
+function changesound(){
+    sound=!sound;
+    localStorage.setItem("sound", sound);
+}
 var reset = function () {
     var pstate = localStorage["princessesCaught"];
-    var psound = localStorage["sound"];    
+    var psound = localStorage["sound"];  
+    sound=psound=="true";
     if (pstate!=""&& pstate>=0)
         princessesCaught=pstate;
-    if(psound!="")
-        sound=psound;
-
     damage=false;
     lives=3;
     var o;
@@ -356,11 +358,9 @@ function checkdmg(time){
 }
 // Update game objects
 var update = function (modifier) {
-    localStorage.setItem("sound", sound);
     var posaux={};
     var posFin={};
     var i, aux;
-    var securetower;
     var hs=hero.speed * modifier;
     moveX=false;
     moveY=false;
@@ -417,23 +417,19 @@ var update = function (modifier) {
     }        
     moveX=true;
     moveY=true;
-    /*
-     * PARTE DONDE SE CONTROLA EL MOVIMIENTO DE LOS MONSTRUOS VERDES
-     */
     for (i=0; i < arrayMonster.length; i++){
-        if (Math.random()<0.015){
+        if (Math.random()<0.01){
             arrayMonster[i].xs=getsigne();
             arrayMonster[i].ys=getsigne();
         }
         posFin.x=arrayMonster[i].x+arrayMonster[i].xs * STANDARSIZE *level* modifier;
         posFin.y=arrayMonster[i].y+arrayMonster[i].ys * STANDARSIZE *level* modifier;      
-        securetower=!areTouching( posFin,tower,STANDARSIZE*3/2);
-        if (elementCheck(posFin,arrayStones)&&inArea(posFin)&&elementCheck(posFin,arrayFire)&&securetower){           
+        if (elementCheck(posFin,arrayStones)&&inArea(posFin)&&elementCheck(posFin,arrayFire)&&!areTouching( posFin,tower,STANDARSIZE*3/2)){           
             arrayMonster[i].x=posFin.x;
             arrayMonster[i].y=posFin.y; 
         }else{
             arrayMonster[i].xs=getsigne();
-            arrayMonster[i].ys=getsigne();    
+            arrayMonster[i].ys=getsigne();
         }
     }
     if (!elementCheck(hero,arrayMonster2)){
@@ -482,9 +478,6 @@ var render = function () {
             ctx.drawImage(fireImage, arrayFire[i].x, arrayFire[i].y);
         }
     }
-    /*
-     * PARTE DONDE SE PINTAN LOS MONSTRUOS VERDES
-     */
 	if (monsterReady){
         for(var i=0;i<arrayMonster.length;i++){
             ctx.drawImage(monsterImage, arrayMonster[i].x, arrayMonster[i].y);
@@ -517,7 +510,7 @@ var render = function () {
     if (lives==0){
         ctx.fillText("0", 200, 12);
     }
-    ctx.fillText(" Sound: "+(sound?"on":"off"), 350,12);
+    ctx.fillText("Sound: "+(sound?"on ":"off "), 350,12);
 	ctx.fillText("Princesses released: " + princessesCaught, 32, 44);
     //ctx.fillText("s: "+arrayStones.length+ " f:"+arrayFire.length+" m: "+arrayMonster.length+" M: "+arrayMonster2.length, 32, 76);
     if (lives<=0)
@@ -536,13 +529,14 @@ var main = function () {
     render();
 
     then = now;
-    
+          
+
 };
 
 
 // Let's play this game!
 
-sound=false;
+
 reset();
 var then = Date.now();
 //The setInterval() method will wait a specified number of milliseconds, and then execute a specified function, and it will continue to execute the function, once at every given time-interval.
