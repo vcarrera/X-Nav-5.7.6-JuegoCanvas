@@ -356,6 +356,7 @@ function checkdmg(time){
 }
 // Update game objects
 var update = function (modifier) {
+    localStorage.setItem("sound", sound);
     var posaux={};
     var posFin={};
     var i, aux;
@@ -535,7 +536,7 @@ var main = function () {
     render();
 
     then = now;
-    localStorage.setItem("sound", sound);
+    
 };
 
 
