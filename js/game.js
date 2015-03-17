@@ -510,7 +510,7 @@ var render = function () {
     if (lives==0){
         ctx.fillText("0", 200, 12);
     }
-    ctx.fillText("Sound: "+(sound?"on ":"off ")+sound, 350,12);
+    ctx.fillText("Sound: "+(sound?"on ":"off "), 350,12);
 	ctx.fillText("Princesses released: " + princessesCaught, 32, 44);
     //ctx.fillText("s: "+arrayStones.length+ " f:"+arrayFire.length+" m: "+arrayMonster.length+" M: "+arrayMonster2.length, 32, 76);
     if (lives<=0)
